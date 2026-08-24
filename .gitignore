@@ -1,0 +1,14 @@
+# Composer Related
+composer.lock
+/vendor
+
+# Editors
+/.idea
+/.fleet
+/.vscode
+
+# OS
+.DS_Store
+
+# Local jig overrides
+/jig.env

@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          tools: composer:v2
+
+      - run: composer validate --strict
+      - run: >-
+          docker run --rm -v "$PWD:/mnt:ro" koalaman/shellcheck:v0.11.0
+          /mnt/bin/jig /mnt/stubs/jig /mnt/runtimes/php/jig-container-init
+      - run: test -x bin/jig && test -x stubs/jig && test -x runtimes/php/jig-container-init
+      - if: startsWith(github.ref, 'refs/tags/v')
+        run: test "$(sed -n 's/^JIG_VERSION="\([^"]*\)"/\1/p' bin/jig)" = "${GITHUB_REF_NAME#v}"
+
+  pest:
+    runs-on: ubuntu-latest
+    env:
+      JIG_TEST_TOOL: pest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          tools: composer:v2
+
+      - run: composer install --working-dir=tests/fixtures/pest --no-interaction --no-progress
+      - working-directory: tests/fixtures/pest
+        run: vendor/bin/jig quality
+      - if: always()
+        working-directory: tests/fixtures/pest
+        run: vendor/bin/jig down -v || true
+
+  phpunit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - run: >-
+          docker run --rm
+          --user "$(id -u):$(id -g)"
+          -e COMPOSER_HOME=/tmp/composer
+          -v "$PWD:/workspace"
+          -w /workspace/tests/fixtures/phpunit
+          composer:2
+          composer install --no-interaction --no-progress
+      - working-directory: tests/fixtures/phpunit
+        run: vendor/bin/jig quality
+      - if: always()
+        working-directory: tests/fixtures/phpunit
+        run: vendor/bin/jig down -v || true

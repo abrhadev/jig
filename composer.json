@@ -1,0 +1,31 @@
+{
+    "name": "abrha/jig",
+    "description": "Minimal Docker-based local development environment for PHP packages.",
+    "keywords": [
+        "abrha",
+        "docker",
+        "development",
+        "jig"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hamed Ehtesham",
+            "email": "H4M3D3@abrha.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Hossein Farahani",
+            "email": "hossein.farahani@abrha.com",
+            "role": "Developer"
+        }
+    ],
+    "bin": [
+        "bin/jig"
+    ],
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

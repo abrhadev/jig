@@ -1,0 +1,22 @@
+services:
+  php:
+    build:
+      context: ${JIG_RUNTIME_PATH}
+      dockerfile: Dockerfile
+      args:
+        PHP_VERSION: ${JIG_PHP_VERSION}
+        JIG_UID: ${JIG_UID}
+        JIG_GID: ${JIG_GID}
+    image: ${JIG_IMAGE}
+    working_dir: /app
+    init: true
+    tty: true
+    stdin_open: true
+    environment:
+      COMPOSER_CACHE_DIR: /composer/cache
+      COMPOSER_HOME: /composer
+      COMPOSER_NO_INTERACTION: "1"
+      JIG_PROJECT: ${JIG_PROJECT_NAME}
+    volumes:
+      - "${JIG_PROJECT_ROOT}:/app"
+      - "${JIG_COMPOSER_CACHE}:/composer/cache"

@@ -1,0 +1,7 @@
+services:
+  php:
+    environment:
+      SSH_AUTH_SOCK: /ssh-agent
+      GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=accept-new"
+    volumes:
+      - "${JIG_SSH_AUTH_SOCK}:/ssh-agent"

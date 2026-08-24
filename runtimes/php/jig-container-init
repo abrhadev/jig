@@ -1,0 +1,13 @@
+#!/bin/sh
+set -e
+
+SSH_SOURCE="${JIG_SSH_SOURCE:-/home/jig/.ssh-host}"
+
+if [ -d "$SSH_SOURCE" ]; then
+    mkdir -p "$HOME/.ssh"
+    cp -RL "$SSH_SOURCE/." "$HOME/.ssh/" 2>/dev/null || true
+    chmod 700 "$HOME/.ssh" 2>/dev/null || true
+    find "$HOME/.ssh" -type f -exec chmod 600 {} \; 2>/dev/null || true
+fi
+
+exec "$@"
